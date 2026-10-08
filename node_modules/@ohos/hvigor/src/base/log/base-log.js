@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});const hvigor_log_js_1=require("./hvigor-log.js"),baseLog=hvigor_log_js_1.HvigorLogger.getLogger("default");exports.default=baseLog;

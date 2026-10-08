@@ -1,0 +1,5 @@
+{
+  "oh-exports": { "trace": true, "traceValue": false },
+  "parameterFile": { "trace": true, "traceValue": false },
+  "properties": { "trace": true, "traceValue": false }
+}

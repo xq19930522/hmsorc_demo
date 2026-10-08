@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.HvigorSystemPlugin=void 0;const const_js_1=require("../../../common/const/const.js");class HvigorSystemPlugin{constructor(s){this.pluginVersion=const_js_1.CUR_HVIGOR_VERSION,this.pluginId=s}getPluginId(){return this.pluginId}}exports.HvigorSystemPlugin=HvigorSystemPlugin;

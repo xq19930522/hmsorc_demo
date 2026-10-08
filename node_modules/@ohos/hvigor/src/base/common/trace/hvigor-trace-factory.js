@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.TrackAPI=void 0;const hvigor_trace_js_1=require("./hvigor-trace.js");function TrackAPI(r,e,t){const c=t.value;return t.value=function(...r){return hvigor_trace_js_1.hvigorTrace.insertUsedApi(e),c.apply(this,r)},t}exports.TrackAPI=TrackAPI;

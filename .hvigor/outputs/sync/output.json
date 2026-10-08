@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "ohos-module-entry": {
+    "SELECT_TARGET": "default",
+    "MODULE_BUILD_DIR": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build",
+    "TARGETS": {
+      "default": {
+        "SOURCE_ROOT": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\src\\main",
+        "RESOURCES_PATH": [
+          "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\src\\main\\resources"
+        ],
+        "BUILD_PATH": {
+          "OUTPUT_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\outputs\\default",
+          "INTERMEDIA_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates",
+          "JS_ASSETS_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\loader_out\\default",
+          "JS_LITE_ASSETS_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\loader_out_lite\\default",
+          "RES_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\res\\default",
+          "RES_PROFILE_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\res\\default\\resources\\base\\profile",
+          "ETS_SUPER_VISUAL_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\cache\\default\\default@CompileArkTS\\esmodule",
+          "JS_SUPER_VISUAL_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\cache\\default\\default@CompileJS\\jsbundle",
+          "WORKER_LOADER": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\loader\\default\\loader.json",
+          "MANIFEST_JSON": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\manifest\\default",
+          "OUTPUT_METADATA_JSON": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\hap_metadata\\default\\output_metadata.json",
+          "SOURCE_MAP_DIR": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry\\build\\default\\intermediates\\source_map\\default"
+        },
+        "BUILD_OPTION": {
+          "debuggable": true
+        }
+      }
+    },
+    "BUILD_OPTION": {
+      "default-default": {
+        "debuggable": true,
+        "copyFrom": "default",
+        "strictMode": {
+          "caseSensitiveCheck": true,
+          "useNormalizedOHMUrl": true
+        },
+        "name": "debug"
+      }
+    },
+    "BUILD_PROFILE_OPT": {
+      "apiType": "stageMode",
+      "buildOption": {},
+      "buildOptionSet": [
+        {
+          "name": "release",
+          "arkOptions": {
+            "obfuscation": {
+              "ruleOptions": {
+                "enable": false
+              }
+            }
+          }
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "debug"
+        }
+      ],
+      "targets": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    "BUILD_CACHE_DIR": ""
+  },
+  "ohos-project": {
+    "SELECT_PRODUCT_NAME": "default",
+    "MODULE_BUILD_DIR": "F:\\HarmonyProject\\harmony7_ocr_demo\\build",
+    "BUNDLE_NAME": "com.harmony7.ocrdemo",
+    "VERSION_CODE": 1000000,
+    "VERSION_NAME": "1.0.0",
+    "BUILD_PATH": {
+      "OUTPUT_PATH": "F:\\HarmonyProject\\harmony7_ocr_demo\\build\\outputs\\default"
+    },
+    "MODULES": [
+      {
+        "name": "entry",
+        "srcPath": "F:\\HarmonyProject\\harmony7_ocr_demo\\entry",
+        "targets": [
+          {
+            "name": "default",
+            "applyToProducts": [
+              "default"
+            ]
+          }
+        ],
+        "belongProjectPath": "F:\\HarmonyProject\\harmony7_ocr_demo"
+      }
+    ],
+    "PROFILE_OPT": {
+      "app": {
+        "signingConfigs": [
+          {
+            "name": "default",
+            "type": "HarmonyOS",
+            "material": {
+              "certpath": "C:\\Users\\sincegame\\.ohos\\config\\default_harmony7_ocr_demo_O9XxYRGaTMhgKpxsv3_r2qRtVFc-CBO2o72gCKVDiPg=.cer",
+              "keyAlias": "debugKey",
+              "keyPassword": "0000001B4F77798850DB462944E16254F9DB5D0030066297F3E638E6047CAE6654C7BD47C5D2E7ABE4724D",
+              "profile": "C:\\Users\\sincegame\\.ohos\\config\\default_harmony7_ocr_demo_O9XxYRGaTMhgKpxsv3_r2qRtVFc-CBO2o72gCKVDiPg=.p7b",
+              "signAlg": "SHA256withECDSA",
+              "storeFile": "C:\\Users\\sincegame\\.ohos\\config\\default_harmony7_ocr_demo_O9XxYRGaTMhgKpxsv3_r2qRtVFc-CBO2o72gCKVDiPg=.p12",
+              "storePassword": "0000001BB53A55DF4049052473EDBC811B01F38AD5DFE7B581A14606ADBED6D5EB73DF5298E93CDEDA03BF"
+            }
+          }
+        ],
+        "products": [
+          {
+            "name": "default",
+            "signingConfig": "default",
+            "compatibleSdkVersion": "5.0.0(12)",
+            "runtimeOS": "HarmonyOS",
+            "targetSdkVersion": "6.1.1(24)",
+            "buildOption": {
+              "strictMode": {
+                "caseSensitiveCheck": true,
+                "useNormalizedOHMUrl": true
+              }
+            }
+          }
+        ],
+        "buildModeSet": [
+          {
+            "name": "debug"
+          },
+          {
+            "name": "release"
+          }
+        ]
+      },
+      "modules": [
+        {
+          "name": "entry",
+          "srcPath": "./entry",
+          "targets": [
+            {
+              "name": "default",
+              "applyToProducts": [
+                "default"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "CONFIG_PROPERTIES": {
+      "enableSignTask": true,
+      "skipNativeIncremental": false,
+      "hvigor.keepDependency": true
+    },
+    "OVERALL_PROJECT_PATHS": [
+      "F:\\HarmonyProject\\harmony7_ocr_demo"
+    ],
+    "BUILD_CACHE_DIR": ""
+  }
+}

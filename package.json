@@ -1,0 +1,17 @@
+{
+  "name": "harmony7_ocr_demo",
+  "version": "1.0.0",
+  "ohos": {
+    "org": "huawei",
+    "buildTool": "hvigor",
+    "directoryLevel": "project"
+  },
+  "description": " HarmonyOS 7.0 通用文字识别（OCR）端侧开发实战 Demo",
+  "repository": {},
+  "license": "ISC",
+  "dependencies": {
+    "@ohos/hypium": "1.0.21",
+    "@ohos/hvigor": "6.24.3",
+    "@ohos/hvigor-ohos-plugin": "6.24.3"
+  }
+}

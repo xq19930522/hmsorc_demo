@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ExtendedErrorInfo=void 0;class ExtendedErrorInfo extends Error{constructor(r,e,o){super(r),this.extraInfo=e,o&&(this.stack=o)}}exports.ExtendedErrorInfo=ExtendedErrorInfo;

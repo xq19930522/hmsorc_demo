@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.matchTaskWithNode=void 0;const taskWithNodeRex=/^(?<node>.+?):(?<taskName>.+)$/;function matchTaskWithNode(e){const t=taskWithNodeRex.exec(e);if(t&&t.groups){const{node:e,taskName:o}=t.groups;return{node:e,taskName:o}}}exports.matchTaskWithNode=matchTaskWithNode;

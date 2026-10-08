@@ -1,0 +1,56 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\sincegame\\.ohos\\config\\default_harmony7_ocr_demo_O9XxYRGaTMhgKpxsv3_r2qRtVFc-CBO2o72gCKVDiPg=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B4F77798850DB462944E16254F9DB5D0030066297F3E638E6047CAE6654C7BD47C5D2E7ABE4724D",
+          "profile": "C:\\Users\\sincegame\\.ohos\\config\\default_harmony7_ocr_demo_O9XxYRGaTMhgKpxsv3_r2qRtVFc-CBO2o72gCKVDiPg=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\sincegame\\.ohos\\config\\default_harmony7_ocr_demo_O9XxYRGaTMhgKpxsv3_r2qRtVFc-CBO2o72gCKVDiPg=.p12",
+          "storePassword": "0000001BB53A55DF4049052473EDBC811B01F38AD5DFE7B581A14606ADBED6D5EB73DF5298E93CDEDA03BF"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "targetSdkVersion": "6.1.1(24)",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

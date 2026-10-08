@@ -1,0 +1,386 @@
+{
+  "title": "Hvigor配置文件",
+  "description": "DevEco Hvigor系统中的构建配置与脚本。",
+  "type": "object",
+  "propertyNames": {
+    "enum": [
+      "modelVersion",
+      "dependencies",
+      "execution",
+      "logging",
+      "debugging",
+      "nodeOptions",
+      "javaOptions",
+      "parameterFile",
+      "properties"
+    ]
+  },
+  "properties": {
+    "modelVersion": {
+      "description": "开发版本。",
+      "type": "string"
+    },
+    "parameterFile": {
+      "description": "用户自定义参数配置文件的路径。",
+      "type": "string",
+      "pattern": "^(\\./|\\.\\./|/)[\\s\\S]+$"
+    },
+    "dependencies": {
+      "description": "构建中使用的插件与依赖库。",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "execution": {
+      "description": "Hvigor的运行模式或能力。",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "analyze",
+          "daemon",
+          "incremental",
+          "parallel",
+          "typeCheck",
+          "optimizationStrategy"
+        ]
+      },
+      "properties": {
+        "analyze": {
+          "description": "Hvigor的构建分析模式或能力。",
+          "type": [
+            "string",
+            "boolean"
+          ],
+          "default": "default",
+          "enum": [
+            "default",
+            "verbose",
+            false,
+            "normal",
+            "advanced",
+            "ultrafine"
+          ]
+        },
+        "daemon": {
+          "description": "是否以守护进程模式执行构建。在CI流水线中建议设为false。",
+          "type": "boolean",
+          "default": true
+        },
+        "incremental": {
+          "description": "是否启用增量构建。",
+          "type": "boolean",
+          "default": true
+        },
+        "parallel": {
+          "description": "是否启用并行构建。",
+          "type": "boolean",
+          "default": true
+        },
+        "typeCheck": {
+          "description": "是否对构建脚本hvigorfile.ts启用类型检查。启用后将降低构建效率。",
+          "type": "boolean",
+          "default": false
+        },
+        "optimizationStrategy": {
+          "description": "优化策略。",
+          "type": "string",
+          "enum": [
+            "memory",
+            "performance"
+          ]
+        }
+      }
+    },
+    "logging": {
+      "description": "Hvigor的日志功能。",
+      "type": "object",
+      "propertyName": {
+        "enum": [
+          "level"
+        ]
+      },
+      "properties": {
+        "level": {
+          "description": "Hvigor日志级别。级别越低，日志越简略；debug级别信息最详细。",
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ]
+        }
+      }
+    },
+    "debugging": {
+      "description": "Hvigor在任务执行期间的能力。",
+      "type": "object",
+      "propertyName": {
+        "enum": [
+          "stacktrace"
+        ]
+      },
+      "properties": {
+        "stacktrace": {
+          "description": "是否启用堆栈追踪。",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "nodeOptions": {
+      "description": "Hvigor在任务执行期间的nodeOptions配置。",
+      "type": "object",
+      "propertyName": {
+        "enum": [
+          "maxOldSpaceSize",
+          "maxSemiSpaceSize",
+          "exposeGC"
+        ]
+      },
+      "properties": {
+        "maxOldSpaceSize": {
+          "description": "V8老生代内存区的最大容量。",
+          "type": "integer"
+        },
+        "maxSemiSpaceSize": {
+          "description": "V8新生代半空间内存区的最大容量。",
+          "type": "integer"
+        },
+        "exposeGC": {
+          "description": "显式触发垃圾回收。",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "javaOptions": {
+      "description": "Hvigor在任务执行期间的javaOptions配置。",
+      "type": "object",
+      "propertyName": {
+        "enum": [
+          "Xmx"
+        ]
+      },
+      "properties": {
+        "Xmx": {
+          "description": "JVM最大堆内存大小，单位为MB。重启DevEco Studio后生效。",
+          "type": "integer"
+        }
+      }
+    },
+    "properties": {
+      "description": "Hvigor的属性配置功能。",
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "boolean",
+          "string",
+          "integer",
+          "number"
+        ]
+      },
+      "properties": {
+        "ohos.integratedHsp.useGetCurrentBundleName": {
+          "description": "ohos.integratedHsp.useGetCurrentBundleName",
+          "type": "boolean",
+          "default": "false"
+        },
+        "ohos.processLib.optimization": {
+          "description": "是否优化ProcessLib任务中的哈希策略。",
+          "type": "boolean",
+          "default": "false"
+        },
+        "hvigor.cacheDir": {
+          "description": "工程根目录下.hvigor缓存文件夹的存储路径。",
+          "type": "string"
+        },
+        "ohos.buildDir": {
+          "description": "工程构建产物目录（build目录）的存储位置。",
+          "type": "string"
+        },
+        "hvigor.pool.maxSize": {
+          "description": "编译过程中使用的线程数。",
+          "type": "integer"
+        },
+        "hvigor.pool.cache.capacity": {
+          "description": "内存缓存容量。值越小，缓存的数据量越少。",
+          "type": "integer",
+          "default": 4
+        },
+        "ohos.pack.compressLevel": {
+          "description": ".so文件的打包压缩级别。级别越高，压缩速度越慢。",
+          "type": "string",
+          "enum": [
+            "fast",
+            "standard",
+            "ultimate"
+          ]
+        },
+        "ohos.arkCompile.maxSize": {
+          "description": "ArkTS编译器的最大工作线程数。",
+          "type": "integer"
+        },
+        "enableSignTask": {
+          "description": "构建任务是否生成未签名的HAP或HSP包。",
+          "type": "boolean"
+        },
+        "hvigor.analyzeHtml": {
+          "description": "构建任务是否生成分析用的HTML文件。",
+          "type": "boolean"
+        },
+        "hvigor.keepDependency": {
+          "description": "是否保留HSP模块依赖与动态依赖。",
+          "type": "boolean"
+        },
+        "ohos.compile.lib.entryfile": {
+          "description": "是否从入口编译HSP、混淆HAR和动态导入HAR。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.sign.har": {
+          "description": "是否为HAR生成签名包。默认值为false。",
+          "type": "boolean"
+        },
+        "hvigor.dependency.useNpm": {
+          "description": "是否在hvigor-config.json5中使用npm下载依赖。启用后，无论当前Node版本如何，默认均使用npm。",
+          "type": "boolean"
+        },
+        "ohos.arkCompile.sourceMapDir": {
+          "description": "sourceMap路径。",
+          "type": "string"
+        },
+        "ohos.align.target": {
+          "description": "构建上下文中的所有目标应具有相同名称，或均为默认目标。",
+          "type": "string"
+        },
+        "hvigor.enableMemoryCache": {
+          "description": "指定构建任务是否使用内存缓存。",
+          "type": "boolean"
+        },
+        "hvigor.sync.cache": {
+          "description": "是否使用内存缓存。",
+          "type": "boolean",
+          "default": "true"
+        },
+        "hvigor.memoryThreshold": {
+          "description": "构建进度内存阈值。",
+          "type": "integer"
+        },
+        "hvigor.incremental.optimization": {
+          "description": "是否缓存任务的声明输入和输出。",
+          "type": "boolean"
+        },
+        "hvigor.task.schedule.optimization": {
+          "description": "是否启用任务调度优化。",
+          "type": "boolean"
+        },
+        "ohos.fallback.target": {
+          "description": "模块间目标任务依赖的回退功能。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "ohos.nativeResolver": {
+          "description": "是否使用原生解析器。",
+          "type": "boolean"
+        },
+        "ohos.arkCompile.noEmitJs": {
+          "description": "是否禁用JS输出。",
+          "type": "boolean"
+        },
+        "ohos.arkCompile.useTscResolve": {
+          "description": "是否使用tsc进行解析。",
+          "type": "boolean"
+        },
+        "ohos.collect.debugSymbol": {
+          "description": "是否收集调试符号至输出路径。",
+          "type": "boolean"
+        },
+        "ohos.arkCompile.emptyBundleName": {
+          "description": "是否在编译器输出中包含应用的包名（bundlename）。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.arkCompile.singleFileEmit": {
+          "description": "是否启用单文件输出模式，可用于优化编译峰值内存。",
+          "type": "boolean"
+        },
+        "ohos.etsLinter.useDeclarationFileSignature": {
+          "description": "是否在完整构建中生成声明文件签名，可用于优化首次编译。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.har.excludeHspDependencies": {
+          "description": "是否从HAR包中排除HSP依赖信息。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.obfuscationRules.optimization": {
+          "description": "是否启用混淆规则收集优化。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.byteCodeHar.integratedOptimization": {
+          "description": "是否启用字节码HAR集成优化。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.uiTransform.Optimization": {
+          "description": "是否启用uiTransform优化。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.rollupCache.useSourceHash": {
+          "description": "设为true时，Rollup使用文件哈希进行比较，而非全文件对比。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.rollupCache.usePathPlaceholder": {
+          "description": "设为true时，Rollup将缓存文件路径替换为占位符。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.align.deviceTypes": {
+          "description": "编译应用时，标准化HSP与HAP间的deviceTypes。此字段仅在Stage模型下生效。",
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "default",
+              "phone",
+              "tablet",
+              "tv",
+              "wearable",
+              "car",
+              "2in1"
+            ]
+          }
+        },
+        "ohos.arkCompile.writeRollupCache": {
+          "description": "设为true时，rollupCache将写入磁盘。默认值为true。",
+          "type": "boolean"
+        },
+        "ohos.dependencies.types.enable": {
+          "description": "是否在编译时收集HAR依赖的'types'。默认值为false。",
+          "type": "boolean"
+        },
+        "ohos.defaults.release.cmakebuildtype": {
+          "description": "Release模式下的默认CMake构建类型。默认值为Release。",
+          "type": "string",
+          "enum": [
+            "Release",
+            "Debug",
+            "RelWithDebInfo"
+          ],
+          "default": "Release"
+        },
+        "ohos.defaults.autoLazyImport": {
+          "description": "是否启用import依赖的自动懒加载能力，其优先级低于工程或模块级配置。",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "required": [
+    "modelVersion",
+    "dependencies"
+  ]
+}

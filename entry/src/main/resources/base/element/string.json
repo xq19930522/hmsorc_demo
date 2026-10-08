@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "OCR 智识主模块"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "基于 Core Vision Kit 的端侧文字识别应用"
+    },
+    {
+      "name": "app_name",
+      "value": "OCR 智识"
+    }
+  ]
+}

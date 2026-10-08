@@ -1,0 +1,1560 @@
+{
+  "title": "openHarmony工程级build-profile配置文件",
+  "description": "本文档描述OpenHarmony工程级配置文件build-profile.json5的配置项详情。",
+  "type": "object",
+  "definitions": {
+    "compressPatterns": {
+      "description": "声明需压缩或不压缩的文件，条目之间为OR（或）关系。",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "path",
+          "size",
+          "resolution"
+        ]
+      },
+      "properties": {
+        "path": {
+          "description": "示例：[\"**/*.png\"]。条目之间为OR（或）关系。",
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "pattern": "^(./)(?!.*\\.\\./)"
+          }
+        },
+        "size": {
+          "description": "示例：[\"2048\", \"4K\"]。",
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": ["integer","string"],
+              "pattern": "^[0-9]+[kKmMgGtT]?$"
+            }
+          }
+        },
+        "resolution": {
+          "description": "示例：[{\"\"width\"\":1024, \"\"height\"\":768}]。",
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "width",
+                  "height"
+                ]
+              },
+              "properties": {
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "buildOption": {
+      "description": "用于配置工程在构建过程中的相关参数。",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "packOptions",
+          "debuggable",
+          "resOptions",
+          "externalNativeOptions",
+          "sourceOption",
+          "napiLibFilterOption",
+          "arkOptions",
+          "nativeLib",
+          "strictMode",
+          "nativeCompiler",
+          "removePermissions",
+          "generateSharedTgz",
+          "preloadSystemSo"
+        ]
+      },
+      "properties": {
+        "packOptions": {
+          "description": "包配置选项，用于限制包的大小与数量。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "buildAppSkipSignHap",
+              "fastBuildApp",
+              "enableSourceCodeCheck",
+              "deduplicateHar",
+              "appWithSignedPkg",
+              "enableIncrementalSoCompress"
+            ]
+          },
+          "properties": {
+            "buildAppSkipSignHap": {
+              "description": "构建应用时是否不生成已签名的HAP包。",
+              "type": "boolean",
+              "default": false
+            },
+            "fastBuildApp": {
+              "description": "是否优化HAP/HSP的打包构建时间。",
+              "type": "boolean",
+              "default": false
+            },
+            "enableSourceCodeCheck": {
+              "description": "检查包中是否包含源代码文件。",
+              "type": "boolean",
+              "default": true
+            },
+            "enableIncrementalSoCompress": {
+              "description": "启用 so 库的增量压缩以加快打包速度。",
+              "type": "boolean",
+              "default": false
+            },
+            "deduplicateHar": {
+              "description": "是否对重复的HAR依赖进行去重。HAP与HSP之间，或多个HSP模块之间的公共依赖将被合并。",
+              "type": "boolean",
+              "default": false
+            },
+            "appWithSignedPkg": {
+              "description": "是否生成所有已签名的应用。",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "removePermissions": {
+          "description": "指定需移除的权限。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "name",
+                "reason",
+                "usedScene"
+              ]
+            },
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "description": "指定需使用的权限名称。",
+                "type": "string"
+              },
+              "reason": {
+                "description": "已废弃：权限申请原因说明。",
+                "type": "string",
+                "deprecated": true,
+                "deprecationMessage": "This property is not necessary here."
+              },
+              "usedScene": {
+                "description": "已废弃：权限使用场景说明。",
+                "type": "object",
+                "deprecated": true,
+                "deprecationMessage": "This property is not necessary here.",
+                "propertyNames": {
+                  "enum": [
+                    "abilities",
+                    "when"
+                  ]
+                },
+                "properties": {
+                  "abilities": {
+                    "description": "标识需要该权限的Ability。",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "when": {
+                    "description": "标识权限的使用时机。",
+                    "type": "string",
+                    "enum": [
+                      "inuse",
+                      "always"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "debuggable": {
+          "description": "调试开关配置。",
+          "type": "boolean",
+          "default": true
+        },
+        "resOptions": {
+          "description": "资源编译相关配置",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "compression",
+              "copyCodeResource",
+              "resCompileThreads",
+              "ignoreResourcePattern",
+              "includeAppScopeRes",
+              "excludeHarRes",
+              "idDefinedFilePath"
+            ]
+          },
+          "properties": {
+            "compression": {
+              "description": "资源压缩相关配置。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "media",
+                  "filters",
+                  "sizeLimit"
+                ]
+              },
+              "properties": {
+                "media": {
+                  "description": "媒体资源压缩相关配置。",
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "enable"
+                    ]
+                  },
+                  "properties": {
+                    "enable": {
+                      "description": "是否启用媒体资源压缩。",
+                      "type": "boolean",
+                      "default": true
+                    }
+                  }
+                },
+                "sizeLimit": {
+                  "description": "资源总大小限制配置。",
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "ratio"
+                    ]
+                  },
+                  "properties": {
+                    "ratio": {
+                      "description": "总大小限制比例。0表示无限制。",
+                      "type": "number",
+                      "default": 0
+                    }
+                  }
+                },
+                "filters": {
+                  "description": "指定压缩方式。",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "propertyNames": {
+                      "enum": [
+                        "method",
+                        "files",
+                        "exclude"
+                      ]
+                    },
+                    "required": [
+                      "method"
+                    ],
+                    "properties": {
+                      "method": {
+                        "description": "指定压缩方式。",
+                        "type": "object",
+                        "propertyNames": {
+                          "enum": ["type", "blocks"]
+                        },
+                        "required": [
+                          "type",
+                          "blocks"
+                        ],
+                        "properties": {
+                          "type" : {
+                            "type" : "string",
+                            "enum": ["astc", "sut"],
+                            "default": "sut"
+                          },
+                          "blocks" : {
+                            "type" : "string",
+                            "enum": ["4x4"],
+                            "default": "4x4"
+                          }
+                        }
+                      },
+                      "files": {
+                        "$ref": "#/definitions/compressPatterns"
+                      },
+                      "exclude": {
+                        "$ref": "#/definitions/compressPatterns"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "copyCodeResource": {
+              "description": "与ets目录下静态资源文件复制行为相关的配置。",
+              "type": "object",
+              "if": {
+                "required": [
+                  "includes"
+                ]
+              },
+              "then": {
+                "propertyNames": {
+                  "enum": ["enable", "includes"]
+                }
+              },
+              "else": {
+                "propertyNames": {
+                  "enum": ["enable", "excludes"]
+                }
+              },
+              "properties": {
+                "enable": {
+                  "description": "是否复制并打包ets目录下的静态资源文件。默认值为true。",
+                  "type": "boolean"
+                },
+                "excludes": {
+                  "description": "使用glob模式定义的过滤规则。当enable设置为false时，此配置不生效。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "includes": {
+                  "description": "使用glob模式定义要复制的文件。当enable设置为false时，此配置不生效。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "resCompileThreads": {
+              "description": "资源编译的线程数。",
+              "type": "integer",
+              "minimum": 1
+            },
+            "ignoreResourcePattern": {
+              "description": "使用glob模式定义的过滤规则。resources目录中匹配任意模式的文件将不会被打包。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "includeAppScopeRes": {
+              "type": "boolean",
+              "description": "编译HSP时是否包含appScope中的资源。默认值为true。",
+              "default": true
+            },
+            "excludeHarRes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "需在资源编译中排除的远程HAR包，这些包不会参与资源编译处理。"
+            },
+            "idDefinedFilePath": {
+              "type": "string",
+              "description": "自定义ID文件的路径。",
+              "pattern": "^.+\\.json5$"
+            }
+          }
+        },
+        "externalNativeOptions": {
+          "description": "Native编译相关配置。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "path",
+              "abiFilters",
+              "arguments",
+              "cppFlags"
+            ]
+          },
+          "properties": {
+            "path": {
+              "description": "CMakeLists.txt文件的路径，例如：./src/main/cpp/CMakeLists.txt或D:/CMakeLists.txt。",
+              "type": "string"
+            },
+            "abiFilters": {
+              "description": "定义CPP应用运行的CPU架构类型。可包含多个架构，例如arm64-v8a。",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "arm64-v8a",
+                  "armeabi-v7a",
+                  "x86_64"
+                ]
+              },
+              "minItems": 1
+            },
+            "arguments": {
+              "description": "指定cmake编译参数，例如：-v -DOHOS_STL=c++_static。",
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              }
+            },
+            "cppFlags": {
+              "description": "配置CMAKE_CXX_FLAGS。",
+              "type": "string"
+            }
+          }
+        },
+        "sourceOption": {
+          "description": "使用不同标签对源码进行分类，以便在构建过程中进行差异化处理。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "workers"
+            ]
+          },
+          "properties": {
+            "workers": {
+              "description": "指定使用Node.js Worker的JS/TS源码，此类源码在构建过程中会被单独处理。",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.{1,2}/.*$"
+              }
+            }
+          }
+        },
+        "napiLibFilterOption": {
+          "description": "原生库(.so)文件过滤配置。",
+          "deprecationMessage": "Please use 'nativeLib/filter' instead in API10 or later.",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "excludes",
+              "pickFirsts",
+              "pickLasts",
+              "enableOverride",
+              "select"
+            ]
+          },
+          "properties": {
+            "excludes": {
+              "description": "排除模式集。匹配任意模式的库将不会被打包。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pickFirsts": {
+              "description": "首次匹配模式 （仅打包第一个匹配的库至HAP/HSP）。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pickLasts": {
+              "description": "末次匹配模式 （仅打包最后一个匹配的库至HAP/HSP）。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "enableOverride": {
+              "description": "是否允许覆盖同名native库。允许出现相同路径的库。",
+              "type": "boolean"
+            },
+            "select": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "propertyNames": {
+                      "enum": [
+                        "package",
+                        "version",
+                        "include",
+                        "exclude"
+                      ]
+                    }
+                  },
+                  {
+                    "propertyNames": {
+                      "enum": [
+                        "package",
+                        "version",
+                        "includePattern",
+                        "excludePattern"
+                      ]
+                    }
+                  }
+                ],
+                "properties": {
+                  "package": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "include": {
+                    "type": "array",
+                    "deprecationMessage": "It is recommended to use includePattern (glob patterns) instead of include (exact filename). ",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "exclude": {
+                    "type": "array",
+                    "deprecationMessage": "It is recommended to use excludePattern (glob patterns) instead of exclude (exact filename). ",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "includePattern": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "excludePattern": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "arkOptions": {
+          "description": "Ark编译相关配置。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "apPath",
+              "hostPGO",
+              "types",
+              "buildProfileFields",
+              "tscConfig",
+              "autoLazyImport",
+              "autoLazyFilter",
+              "skipOhModulesLint",
+              "branchElimination",
+              "reExportCheckMode",
+              "expandImportPath"
+            ]
+          },
+          "properties": {
+            "expandImportPath": {
+              "description": "编译期间import展开。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "enable",
+                  "exclude"
+                ]
+              },
+              "properties": {
+                "enable": {
+                  "description": "启用编译期间import展开。",
+                  "type": "boolean"
+                },
+                "exclude": {
+                  "description": "指定不进行import展开的包。",
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "apPath": {
+              "description": "应用热点信息文件。",
+              "type": "string",
+              "maxLength": 127
+            },
+            "hostPGO": {
+              "description": "启用基于Profile的优化能力。API 10+支持。",
+              "type": "boolean"
+            },
+            "types": {
+              "description": "自定义类型相关配置。",
+              "type": "array",
+              "items": {
+                "description": "自定义类型的相对路径或包名。",
+                "type": "string"
+              }
+            },
+            "buildProfileFields": {
+              "description": "ArkTS构建配置。",
+              "type": "object",
+              "patternProperties": {
+                "^[0-9a-zA-Z_-]+$": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "tscConfig": {
+              "description": "Configurations related to tsconfig.json",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "targetESVersion",
+                  "maxFlowDepth"
+                ]
+              },
+              "properties": {
+                "targetESVersion": {
+                  "type": [
+                    "string"
+                  ],
+                  "enum": [
+                    "ES2017",
+                    "ES2021"
+                  ]
+                },
+                "maxFlowDepth": {
+                  "type": [
+                    "integer"
+                  ],
+                  "default": 2000,
+                  "minimum": 2000,
+                  "maximum": 65535
+                }
+              }
+            },
+            "autoLazyImport": {
+              "description": "是否允许导入依赖时自动启用懒加载。",
+              "type": "boolean",
+              "default": false
+            },
+            "autoLazyFilter": {
+              "type": "object",
+              "description": "自动懒加载过滤器，仅当autoLazyImport为true时生效。",
+              "oneOf": [
+                {
+                  "propertyNames": {
+                    "enum": ["include"]
+                  }
+                },
+                {
+                  "propertyNames": {
+                    "enum": ["exclude"]
+                  }
+                }
+              ],
+              "properties": {
+                "include": {
+                  "type": "array",
+                  "description": "指定在编译时需要被转换为懒加载形式的包。",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^(@(?![0-9\\-_])[a-z0-9\\-_]+(?<![\\-_])/)?(?![0-9\\-_.])[a-z0-9\\-_.]+(?<![\\-_.])$"
+                  }
+                },
+                "exclude": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "指定在编译时不被转换为懒加载形式的包。",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^(@(?![0-9\\-_])[a-z0-9\\-_]+(?<![\\-_])/)?(?![0-9\\-_.])[a-z0-9\\-_.]+(?<![\\-_.])$"
+                  }
+                }
+              }
+            },
+            "branchElimination": {
+              "description": "是否启用分支裁剪。",
+              "type": "boolean",
+              "default": false
+            },
+            "skipOhModulesLint": {
+              "description": "是否跳过oh_modules目录的ArkTS代码检查。",
+              "type": "boolean",
+              "default": false
+            },
+            "reExportCheckMode": {
+              "type": "string",
+              "description": "指定重导出的检查方式。",
+              "default": "noCheck",
+              "enum": [
+                "noCheck",
+                "compatible",
+                "strict"
+              ]
+            }
+          }
+        },
+        "nativeCompiler": {
+          "description": "用于配置原生编译器。",
+          "type": "string",
+          "enum": [
+            "Original",
+            "BiSheng"
+          ],
+          "default": "Original"
+        },
+        "nativeLib": {
+          "description": "Native lib配置项。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "debugSymbol",
+              "filter",
+              "headerPath",
+              "collectAllLibs",
+              "excludeFromHar",
+              "excludeSoFromInterfaceHar",
+              "excludeSoFromBinXO"
+            ]
+          },
+          "properties": {
+            "collectAllLibs": {
+              "description": "是否取消文件类型限制（默认仅收集libs目录下的.so文件）。",
+              "type": "boolean",
+              "default": false
+            },
+            "debugSymbol": {
+              "description": "debugSymbol配置项。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "strip",
+                  "exclude"
+                ]
+              },
+              "properties": {
+                "strip": {
+                  "description": "是否对.so文件执行strip操作。",
+                  "type": "boolean"
+                },
+                "exclude": {
+                  "description": "strip操作的包含/排除列表。当strip为 true 时，列表中的.so文件不会被处理；为false时，仅列表中的.so文件会被处理。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "filter": {
+              "description": "Native 库过滤设置项。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "excludes",
+                  "pickFirsts",
+                  "pickLasts",
+                  "enableOverride",
+                  "select"
+                ]
+              },
+              "properties": {
+                "excludes": {
+                  "description": "排除模式集。匹配任意模式的库将不会被打包。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "pickFirsts": {
+                  "description": "首次匹配模式 （仅打包第一个匹配的库至HAP/HSP）。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "pickLasts": {
+                  "description": "末次匹配模式 （仅打包最后一个匹配的库至HAP/HSP）。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "enableOverride": {
+                  "description": "是否允许覆盖同名native库。允许出现相同路径的库。",
+                  "type": "boolean"
+                },
+                "select": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "oneOf": [
+                      {
+                        "propertyNames": {
+                          "enum": [
+                            "package",
+                            "version",
+                            "include",
+                            "exclude"
+                          ]
+                        }
+                      },
+                      {
+                        "propertyNames": {
+                          "enum": [
+                            "package",
+                            "version",
+                            "includePattern",
+                            "excludePattern"
+                          ]
+                        }
+                      }
+                    ],
+                    "properties": {
+                      "package": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "string"
+                      },
+                      "include": {
+                        "type": "array",
+                        "deprecationMessage": "It is recommended to use includePattern (glob patterns) instead of include (exact filename). ",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "exclude": {
+                        "type": "array",
+                        "deprecationMessage": "It is recommended to use excludePattern (glob patterns) instead of exclude (exact filename). ",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "includePattern": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "excludePattern": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headerPath": {
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              },
+              "description": "指向包含头文件的目录路径，这些头文件将导出给依赖当前模块的模块。"
+            },
+            "excludeFromHar": {
+              "type": "boolean",
+              "description": "是否在HAR依赖中排除.so文件。默认值为true。"
+            },
+            "excludeSoFromInterfaceHar": {
+              "description": "为true时，在打包HSP时不会将.so文件包含在接口HAR中（仅适用于HSP包）。",
+              "type": "boolean",
+              "default": false
+            },
+            "excludeSoFromBinXO": {
+              "description": "列出要从binxo中排除的.so文件。如果OHOS_ENABLE_HWASAN和OHOS_ENABLE_BINXO设置为true，则列表中匹配的.so文件将不会被binxo处理。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "strictMode": {
+          "description": "定义严格检查模式。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "noExternalImportByPath",
+              "useNormalizedOHMUrl",
+              "caseSensitiveCheck",
+              "duplicateDependencyCheck",
+              "harLocalDependencyCheck",
+              "enableStrictCheckOHModule",
+              "disableSendableCheckRules",
+              "strictCheckerOnly"
+            ]
+          },
+          "properties": {
+            "noExternalImportByPath": {
+              "description": "是否禁止使用绝对路径或指向模块外的相对路径导入文件。取值为true表示禁止。",
+              "type": "boolean",
+              "default": false
+            },
+            "useNormalizedOHMUrl": {
+              "description": "是否使用新的ohmurl格式。",
+              "type": "boolean",
+              "default": false
+            },
+            "strictCheckerOnly": {
+              "description": "是否启用ets严格检查。",
+              "type": "boolean",
+              "default": false
+            },
+            "caseSensitiveCheck": {
+              "description": "是否启用大小写敏感。",
+              "type": "boolean",
+              "default": false
+            },
+            "duplicateDependencyCheck": {
+              "description": "是否在构建应用时检查HSP模块间重复的HAR依赖。",
+              "type": "boolean",
+              "default": false
+            },
+            "harLocalDependencyCheck": {
+              "description": "是否在应用构建时检查HSP和HAR模块之外的本地依赖。",
+              "type": "boolean",
+              "default": false
+            },
+            "enableStrictCheckOHModule": {
+              "description": "是否对HAR模块启用严格检查。",
+              "type": "boolean",
+              "default": false
+            },
+            "disableSendableCheckRules": {
+              "description": "指定要禁用的检查规则。",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "generateSharedTgz": {
+          "type": "boolean",
+          "description": "编译HSP时是否生成共享tgz包。"
+        },
+        "preloadSystemSo": {
+          "description": "预加载应用冷启动所需的系统共享库（.so），以提升启动性能。默认值为false。",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "propertyNames": {
+    "enum": [
+      "app",
+      "modules"
+    ]
+  },
+  "properties": {
+    "app": {
+      "description": "OpenHarmony应用工程级配置信息，由所有FA/PA模块共享，包括编译API级别、签名和产品信息。",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "signingConfigs",
+          "products",
+          "buildModeSet",
+          "multiProjects",
+          "capabilities"
+        ]
+      },
+      "properties": {
+        "signingConfigs": {
+          "description": "OpenHarmony应用的签名方案。可配置多套签名方案。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "name",
+                "material",
+                "type"
+              ]
+            },
+            "properties": {
+              "material": {
+                "type": "object",
+                "propertyNames": {
+                  "enum": [
+                    "storePassword",
+                    "certpath",
+                    "keyAlias",
+                    "keyPassword",
+                    "profile",
+                    "signAlg",
+                    "storeFile"
+                  ]
+                },
+                "properties": {
+                  "storePassword": {
+                    "type": "string"
+                  },
+                  "certpath": {
+                    "type": "string"
+                  },
+                  "keyAlias": {
+                    "type": "string"
+                  },
+                  "keyPassword": {
+                    "type": "string"
+                  },
+                  "profile": {
+                    "type": "string"
+                  },
+                  "signAlg": {
+                    "type": "string",
+                    "enum": [
+                      "SHA256withECDSA"
+                    ]
+                  },
+                  "storeFile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "storeFile",
+                  "storePassword",
+                  "keyAlias",
+                  "keyPassword",
+                  "signAlg",
+                  "profile",
+                  "certpath"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "HarmonyOS",
+                  "OpenHarmony"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "material"
+            ]
+          }
+        },
+        "products": {
+          "description": "产品品类列表。默认存在一个default产品，可为不同产品指定签名方案。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "oneOf": [
+              {
+                "propertyNames": {
+                  "enum": [
+                    "name",
+                    "signingConfig",
+                    "bundleName",
+                    "buildOption",
+                    "runtimeOS",
+                    "compileSdkVersion",
+                    "compatibleSdkVersion",
+                    "compatibleSdkVersionStage",
+                    "targetSdkVersion",
+                    "bundleType",
+                    "label",
+                    "icon",
+                    "versionCode",
+                    "versionName",
+                    "buildVersion",
+                    "resource",
+                    "output",
+                    "vendor"
+                  ]
+                }
+              },
+              {
+                "propertyNames": {
+                  "enum": [
+                    "name",
+                    "signingConfig",
+                    "bundleName",
+                    "buildOption",
+                    "runtimeOS",
+                    "compileSdkVersion",
+                    "compatibleSdkVersion",
+                    "compatibleSdkVersionStage",
+                    "targetSdkVersion",
+                    "bundleType",
+                    "label",
+                    "icon",
+                    "versionCode",
+                    "versionName",
+                    "buildVersion",
+                    "resource",
+                    "output",
+                    "arkTSVersion",
+                    "vendor"
+                  ]
+                },
+                "if": {
+                  "required": [
+                    "arkTSVersion"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "compileSdkVersion": {
+                      "description": "指定编译时使用的SDK API版本。该值决定HAP包中的apiTargetVersion。",
+                      "anyOf": [
+                        {
+                          "pattern": "^((?:[5-9]|[1-9]\\d+)\\.\\d+\\.\\d+\\(\\d+\\)|4\\.(?:[1-9]\\d*\\.\\d+\\(\\d+\\)|0\\.(?:[1-9]\\d*\\(\\d+\\)|0\\((?:1[1-9]|[2-9]\\d+)\\))))$",
+                          "type": [
+                            "string"
+                          ]
+                        },
+                        {
+                          "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(?:\\(\\d{1,3}(?:\\.\\d{1,3}){0,2}\\))?$",
+                          "type": [
+                            "string"
+                          ]
+                        },
+                        {
+                          "pattern": "\\d{1,3}(?:\\.\\d{1,3}){0,2}?$",
+                          "type": [
+                            "string"
+                          ]
+                        },
+                        {
+                          "minimum": 11,
+                          "type": [
+                            "number"
+                          ]
+                        }
+                      ],
+                      "exclusiveMinimum": 7
+                    }
+                  }
+                },
+                "required": [
+                  "arkTSVersion"
+                ]
+              }
+            ],
+            "required": [
+              "name",
+              "compatibleSdkVersion"
+            ],
+            "properties": {
+              "compileSdkVersion": {
+                "description": "编译应用/元服务使用的SDK版本，决定应用开发过程中可自动联想的API范围和使用的工具链版本。HarmonyOS运行环境无需显性配置，默认使用 DevEco Studio 自带的 SDK 版本；OpenHarmony运行环境需要显性配置，且只能配置自带的 SDK 版本。",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "exclusiveMinimum": 7
+              },
+              "compatibleSdkVersion": {
+                "description": "应用/元服务运行所需兼容的最低SDK版本。运行应用的系统 API 版本不能低于该值，否则无法安装；不能高于目标SDK版本",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "exclusiveMinimum": 3
+              },
+              "compatibleSdkVersionStage": {
+                "description": "指定编译时兼容的ABC编译器版本。若compatibleSdkVersion为API version 12，则默认值为\"beta1\"。该字段仅适用于API version 12。",
+                "type": "string",
+                "enum": [
+                  "beta1",
+                  "beta2",
+                  "beta3",
+                  "beta5",
+                  "beta6",
+                  "release"
+                ]
+              },
+              "targetSdkVersion": {
+                "description": "应用/元服务运行的目标SDK版本。系统会根据 targetSdkVersion 控制应用的行为。如未配置，默认与compileSdkVersion保持一致",
+                "type": [
+                  "integer",
+                  "string"
+                ],
+                "exclusiveMinimum": 7
+              },
+              "runtimeOS": {
+                "description": "指定产品运行时的操作系统类型。",
+                "type": "string",
+                "enum": [
+                  "HarmonyOS",
+                  "OpenHarmony"
+                ]
+              },
+              "name": {
+                "description": "OpenHarmony应用的产品类型名称。默认存在一个名为default的产品。",
+                "type": "string",
+                "pattern": "^[\\da-zA-Z_-]+$"
+              },
+              "arkTSVersion": {
+                "description": "ArkTS语言版本配置。",
+                "type": "string",
+                "enum": [
+                  "1.0",
+                  "1.1"
+                ]
+              },
+              "output": {
+                "description": "自定义产品生成的应用包配置。",
+                "type": "object",
+                "propertyNames": {
+                  "enum": [
+                    "artifactName"
+                  ]
+                },
+                "required": [
+                  "artifactName"
+                ],
+                "properties": {
+                  "artifactName": {
+                    "description": "自定义产品生成的应用包名称。",
+                    "type": "string",
+                    "pattern": "^[\\da-zA-Z0-9._-]+$"
+                  }
+                }
+              },
+              "signingConfig": {
+                "description": "指定产品使用的签名方案。签名方案必须在app/signingConfigs中声明，并通过名称选择。",
+                "type": "string"
+              },
+              "bundleName": {
+                "description": "应用包名，用于唯一标识应用。",
+                "type": "string",
+                "maxLength": 127,
+                "minLength": 7,
+                "pattern": "^(([a-zA-Z]|[a-zA-Z]\\w+)[.]([\\da-zA-Z_.]+))|([{]([a-zA-Z]|[a-zA-Z]\\w+)[}](.huawei.com))|[{](bundleName)[}]$"
+              },
+              "buildOption": {
+                "$ref": "#/definitions/buildOption"
+              },
+              "bundleType": {
+                "description": "包类型。",
+                "type": "string",
+                "enum": [
+                  "app",
+                  "atomicService",
+                  "shared"
+                ]
+              },
+              "label": {
+                "description": "应用标签。",
+                "type": "string",
+                "maxLength": 255,
+                "pattern": "^[$]string:[0-9a-zA-Z_.]+|(?=.*[{])(?=.*[}])[0-9a-zA-Z_.{}]+$"
+              },
+              "icon": {
+                "description": "应用图标索引，例如 $media:application_icon。默认可为空。",
+                "type": "string",
+                "pattern": "^[$]media:[0-9a-zA-Z_.]+|(?=.*[{])(?=.*[}])[0-9a-zA-Z_.{}]+$"
+              },
+              "versionCode": {
+                "description": "应用版本号（versionCode）。取值为大于0的整数。值越大通常表示版本越新，系统根据该值判断应用版本。此字段不可为空。",
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "versionName": {
+                "description": "应用版本名称。用户可见，最大长度为127字节，不可为空。",
+                "type": "string",
+                "maxLength": 127,
+                "pattern": "^[0-9.]+|(?=.*[{])(?=.*[}])[0-9a-zA-Z_.{}]+$"
+              },
+              "buildVersion": {
+                "description": "应用构建版本。",
+                "type": "string",
+                "maxLength": 18,
+                "pattern": "^(?=.{1,18}$)(?:0|[1-9]\\d*)(?:\\.(?:0|[1-9]\\d*)){0,2}$"
+              },
+              "resource": {
+                "description": "应用资源。",
+                "type": "object",
+                "propertyNames": {
+                  "enum": [
+                    "directories"
+                  ]
+                },
+                "required": [
+                  "directories"
+                ],
+                "properties": {
+                  "directories": {
+                    "description": "资源目录。",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                }
+              },
+              "vendor": {
+                "description": "厂商信息。用户可见，最大长度为127字节，默认可为空。",
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "if": {
+              "required": ["runtimeOS"]
+            },
+            "then": {
+              "if": {
+                "properties": {
+                  "runtimeOS": { "const": "HarmonyOS" }
+                }
+              },
+              "then": {
+                "properties": {
+                  "compileSdkVersion": {
+                    "description": "指定编译时使用的SDK API版本。该值决定HAP包中的apiTargetVersion。",
+                    "type": "string"
+                  },
+                  "compatibleSdkVersion": {
+                    "description": "指定编译时兼容的最低SDK API版本。该值决定HAP包中的apiCompatibleVersion。",
+                    "type": "string"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "compileSdkVersion": {
+                    "description": "指定编译时使用的SDK API版本。该值决定HAP包中的apiTargetVersion。",
+                    "type": ["integer", "string"],
+                    "exclusiveMinimum": 7
+                  },
+                  "compatibleSdkVersion": {
+                    "description": "指定编译时兼容的最低SDK API版本。该值决定HAP包中的apiCompatibleVersion。",
+                    "type": ["integer", "string"],
+                    "exclusiveMinimum": 3
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "compileSdkVersion": {
+                  "description": "指定编译时使用的SDK API版本。该值决定HAP包中的apiTargetVersion。",
+                  "type": ["integer", "string"],
+                  "exclusiveMinimum": 7
+                },
+                "compatibleSdkVersion": {
+                  "description": "指定编译时兼容的最低SDK API版本。该值决定HAP包中的apiCompatibleVersion。",
+                  "type": ["integer", "string"],
+                  "exclusiveMinimum": 3
+                }
+              }
+            }
+          }
+        },
+        "buildModeSet": {
+          "description": "构建模式集合。每种模式对应不同目标任务的构建配置方案。默认packageHap使用debug模式，packageApp使用release模式。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "name",
+                "buildOption"
+              ]
+            },
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "description": "BuildOption名称。",
+                "type": "string",
+                "pattern": "^[0-9a-zA-Z_-]+$"
+              },
+              "buildOption": {
+                "$ref": "#/definitions/buildOption"
+              }
+            }
+          }
+        },
+        "multiProjects": {
+          "description": "当前工程是否支持多工程。",
+          "type": "boolean",
+          "default": false
+        },
+        "capabilities": {
+          "description": "用户能力列表。可配置多个能力。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "bundleName",
+                "config"
+              ]
+            },
+            "required": [
+              "bundleName",
+              "config"
+            ],
+            "properties": {
+              "bundleName": {
+                "$ref": "#/properties/app/properties/products/items/properties/bundleName"
+              },
+              "config": {
+                "description": "能力详细配置。",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "name",
+                      "capability",
+                      "subCapabilities"
+                    ]
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "allOf": [
+                    {
+                      "if": {
+                        "not": { "required": ["subCapabilities"] }
+                      },
+                      "then": {
+                        "required": ["capability"]
+                      }
+                    }
+                  ],
+                  "properties": {
+                    "name": {
+                      "description": "能力名称。",
+                      "type": "string"
+                    },
+                    "capability": {
+                      "description": "能力值。若存在子能力，此字段可选。",
+                      "type": "string"
+                    },
+                    "subCapabilities": {
+                      "description": "能力的子能力列表。",
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "propertyNames": {
+                          "enum": [
+                            "name",
+                            "capability"
+                          ]
+                        },
+                        "required": [
+                          "name",
+                          "capability"
+                        ],
+                        "properties": {
+                          "name": {
+                            "description": "子能力名称。",
+                            "type": "string"
+                          },
+                          "capability": {
+                            "description": "能力值。",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": []
+    },
+    "modules": {
+      "description": "模块列表。包含名称、路径及目标与产品的关联配置。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "enum": [
+            "name",
+            "srcPath",
+            "targets"
+          ]
+        },
+        "properties": {
+          "srcPath": {
+            "description": "模块源代码路径。该路径是相对于当前配置文件的相对路径，其下必须包含hvigorfile.ts/js和package.json的配置。",
+            "type": "string",
+            "pattern": "^(\\./|\\.\\./|/)[\\s\\S]+$"
+          },
+          "name": {
+            "description": "模块的逻辑名称。取值必须与config.json/module.json文件中的moduleName保持一致。",
+            "type": "string"
+          },
+          "targets": {
+            "description": "配置模块目标与应用产品之间的关联。",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "name",
+                  "applyToProducts"
+                ]
+              },
+              "properties": {
+                "name": {
+                  "description": "模块目标名称。该名称必须在模块级build-profile.json5的target配置中已定义。",
+                  "type": "string",
+                  "pattern": "^[\\da-zA-Z_-]+$"
+                },
+                "applyToProducts": {
+                  "description": "指定目标适用的产品。这意味着不同产品可以关联不同的目标。",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[\\da-zA-Z_-]+$"
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "srcPath",
+          "name"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "app",
+    "modules"
+  ]
+}

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.BuildInfoCacheEntry=void 0;const cache_entry_js_1=require("./cache-entry.js");class BuildInfoCacheEntry extends cache_entry_js_1.CacheEntry{constructor(e,r){super(e,r)}}exports.BuildInfoCacheEntry=BuildInfoCacheEntry;

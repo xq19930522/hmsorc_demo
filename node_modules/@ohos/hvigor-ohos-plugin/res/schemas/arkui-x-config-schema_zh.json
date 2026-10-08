@@ -1,0 +1,53 @@
+{
+  "title": "ArkUI-X跨平台工程配置文件",
+  "description": "本文档描述了如何配置ArkUI-X跨平台工程的arkui-x-config.json5文件。",
+  "type": "object",
+  "propertyNames": {
+    "enum": [
+      "crossplatform",
+      "modules",
+      "buildOption"
+    ]
+  },
+  "properties": {
+    "crossplatform": {
+      "description": "跨平台应用构建启用标志。",
+      "type": "boolean"
+    },
+    "modules": {
+      "description": "描述OpenHarmony所需的跨平台模块。",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "buildOption": {
+      "description": "构建选项过滤工具，用于在资源复制任务之前过滤掉使用频率较低的语言资源。",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "resConfigs",
+          "ignoreCrossPlatform"
+        ]
+      },
+      "properties": {
+        "resConfigs": {
+          "description": "过滤工具保留语言的集合。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ignoreCrossPlatform": {
+          "description": "是否忽略不支持的跨平台API的错误。",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "required": [
+    "crossplatform",
+    "modules"
+  ]
+}

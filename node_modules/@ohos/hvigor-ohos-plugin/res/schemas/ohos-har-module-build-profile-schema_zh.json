@@ -1,0 +1,954 @@
+{
+  "title": "openHarmony模块级build-profile配置文件",
+  "description": "本文档描述OpenHarmony模块级配置文件build-profile.json5的配置项详情。",
+  "type": "object",
+  "definitions": {
+    "buildOption": {
+      "description": "用于配置模块在构建过程中的相关参数。",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "name",
+          "debuggable",
+          "copyFrom",
+          "externalNativeOptions",
+          "sourceOption",
+          "napiLibFilterOption",
+          "arkOptions",
+          "nativeLib",
+          "resOptions",
+          "packingOptions"
+        ]
+      },
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/name"
+        },
+        "debuggable": {
+          "description": "调试开关配置。",
+          "type": "boolean",
+          "default": true
+        },
+        "copyFrom": {
+          "$ref": "#/definitions/name"
+        },
+        "resOptions": {
+          "description": "资源编译相关配置。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "copyCodeResource",
+              "resCompileThreads",
+              "ignoreResourcePattern"
+            ]
+          },
+          "properties": {
+            "copyCodeResource": {
+              "description": "与ets目录下静态资源文件复制行为相关的配置。",
+              "type": "object",
+              "if": {
+                "required": [
+                  "includes"
+                ]
+              },
+              "then": {
+                "propertyNames": {
+                  "enum": ["enable", "includes"]
+                }
+              },
+              "else": {
+                "propertyNames": {
+                  "enum": ["enable", "excludes"]
+                }
+              },
+              "properties": {
+                "enable": {
+                  "description": "是否复制并打包ets目录下的静态资源文件。默认值为true。",
+                  "type": "boolean"
+                },
+                "excludes": {
+                  "description": "使用glob模式定义的过滤规则。当enable设置为false时，此配置不生效。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "includes": {
+                  "description": "使用glob模式定义要复制的文件。当enable设置为false时，此配置不生效。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "resCompileThreads": {
+              "description": "资源编译的线程数。",
+              "type": "integer",
+              "minimum": 1
+            },
+            "ignoreResourcePattern": {
+              "description": "使用glob模式定义的过滤规则。resources目录中匹配任意模式的文件将不会被打包。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "externalNativeOptions": {
+          "description": "Native编译相关配置。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "path",
+              "abiFilters",
+              "arguments",
+              "cppFlags",
+              "cFlags",
+              "targets"
+            ]
+          },
+          "properties": {
+            "path": {
+              "description": "CMakeLists.txt文件的路径，例如：./src/main/cpp/CMakeLists.txt或D:/CMakeLists.txt。",
+              "type": "string"
+            },
+            "abiFilters": {
+              "description": "定义C++应用运行所支持的系统CPU架构类型，可包含多个，例如：Arm64-v8a。",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "arm64-v8a",
+                  "armeabi-v7a",
+                  "x86_64"
+                ]
+              },
+              "minItems": 1
+            },
+            "arguments": {
+              "description": "指定cmake编译参数，例如：-v -DOHOS_STL=c++_static。",
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              }
+            },
+            "cppFlags": {
+              "description": "配置CMAKE_CXX_FLAGS。",
+              "type": "string"
+            },
+            "cFlags": {
+              "description": "配置CMAKE_C_FLAGS。",
+              "type": "string"
+            },
+            "targets": {
+              "description": "指定CMake工程中需要由Hvigor构建的库或可执行目标。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sourceOption": {
+          "description": "使用不同标签对源码进行分类，以便在构建过程中进行差异化处理。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "workers"
+            ]
+          },
+          "properties": {
+            "workers": {
+              "description": "指定使用Node.js Worker的ArkTS/TS/JS源码，此类源码在构建过程中会被单独处理。",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.{1,2}\/.*$"
+              }
+            }
+          }
+        },
+        "napiLibFilterOption": {
+          "description": "库(.so)文件过滤配置。",
+          "deprecationMessage": "Please use 'nativeLib/filter' instead in API10 or later.",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "excludes",
+              "pickFirsts",
+              "pickLasts",
+              "enableOverride"
+            ]
+          },
+          "properties": {
+            "excludes": {
+              "description": "排除模式集：匹配任意模式的库将不会被打包。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pickFirsts": {
+              "description": "首次匹配模式集：匹配任意模式的库只有第一个会被打包到HAR。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pickLasts": {
+              "description": "最后匹配模式集：匹配任意模式的库只有最后一个会被打包到HAR。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "enableOverride": {
+              "description": "是否允许覆盖同名native库。允许出现相同路径的库。",
+              "type": "boolean"
+            }
+          }
+        },
+        "arkOptions": {
+          "description": "Ark编译相关配置。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "types",
+              "obfuscation",
+              "buildProfileFields",
+              "runtimeOnly",
+              "byteCodeHar",
+              "bundledDependencies",
+              "transformLib",
+              "autoLazyImport",
+              "autoLazyFilter",
+              "branchElimination",
+              "reExportCheckMode",
+              "skipOhModulesLint",
+              "packSourceMap"
+            ]
+          },
+          "properties": {
+            "types": {
+              "description": "自定义类型相关配置。",
+              "type": "array",
+              "items": {
+                "description": "自定义类型的相对路径或包名。",
+                "type": "string"
+              }
+            },
+            "runtimeOnly": {
+              "description": "动态import配置。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "sources",
+                  "packages"
+                ]
+              },
+              "properties": {
+                "sources": {
+                  "description":"以相对路径形式配置的动态import，可包括文件或文件夹。",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^\\.{1,2}\/.*$"
+                  }
+                },
+                "packages": {
+                  "description": "以文件名及包名形式配置的动态import。",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^(@(?![0-9\\-_])[a-zA-Z0-9\\-_]+(?<![\\-_])/)?(?![0-9\\-_.])[a-zA-Z0-9\\-_.]+(?<![\\-_.])$"
+                  }
+                }
+              }
+            },
+            "obfuscation": {
+              "description": "代码混淆相关配置。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "ruleOptions",
+                  "consumerFiles"
+                ]
+              },
+              "properties": {
+                "ruleOptions": {
+                  "description": "混淆规则相关配置。",
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "enable",
+                      "files"
+                    ]
+                  },
+                  "required": [
+                    "enable"
+                  ],
+                  "properties": {
+                    "enable": {
+                      "description": "是否启用代码混淆。",
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "files": {
+                      "description": "声明混淆规则文件。",
+                      "type": [
+                        "string",
+                        "array"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "consumerFiles": {
+                  "description": "HAR中包含的混淆规则文件。",
+                  "type": [
+                    "string",
+                    "array"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "buildProfileFields": {
+              "description": "ArkTS构建配置。",
+              "type": "object",
+              "patternProperties": {
+                "^[0-9a-zA-Z_-]+$": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "byteCodeHar": {
+              "description": "是否构建字节码HAR。",
+              "type": "boolean"
+            },
+            "bundledDependencies": {
+              "description": "是否将多个本地或远端源码HAR编译为字节码HAR。",
+              "type": "boolean"
+            },
+            "transformLib": {
+              "description": "配置构建过程中使用的transformLib文件。",
+              "type": "string",
+              "maxLength": 127
+            },
+            "autoLazyImport": {
+              "description": "是否允许导入依赖时自动启用懒加载。",
+              "type": "boolean",
+              "default": false
+            },
+            "autoLazyFilter": {
+              "type": "object",
+              "description": "自动懒加载过滤器，仅当autoLazyImport为true时生效。",
+              "oneOf": [
+                {
+                  "propertyNames": {
+                    "enum": ["include"]
+                  }
+                },
+                {
+                  "propertyNames": {
+                    "enum": ["exclude"]
+                  }
+                }
+              ],
+              "properties": {
+                "include": {
+                  "type": "array",
+                  "description": "指定在编译时需要被转换为懒加载形式的包。",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^(@(?![0-9\\-_])[a-z0-9\\-_]+(?<![\\-_])/)?(?![0-9\\-_.])[a-z0-9\\-_.]+(?<![\\-_.])$"
+                  }
+                },
+                "exclude": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "指定在编译时不被转换为懒加载形式的包。",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^(@(?![0-9\\-_])[a-z0-9\\-_]+(?<![\\-_])/)?(?![0-9\\-_.])[a-z0-9\\-_.]+(?<![\\-_.])$"
+                  }
+                }
+              }
+            },
+            "branchElimination": {
+              "description": "是否启用分支裁剪。",
+              "type": "boolean",
+              "default": false
+            },
+            "skipOhModulesLint": {
+              "description": "是否跳过oh_modules目录的ArkTS代码检查。",
+              "type": "boolean",
+              "default": false
+            },
+            "reExportCheckMode": {
+              "type": "string",
+              "description": "指定重导出的检查方式。",
+              "default": "noCheck",
+              "enum": [
+                "noCheck",
+                "compatible",
+                "strict"
+              ]
+            },
+            "packSourceMap": {
+              "description": "在编译字节码HAR时是否打包SourceMap文件。",
+              "type": "boolean"
+            }
+          }
+        },
+        "nativeLib": {
+          "description": "Native lib配置项。",
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "debugSymbol",
+              "filter",
+              "headerPath",
+              "collectAllLibs",
+              "librariesInfo",
+              "excludeFromHar",
+              "excludeSoFromBinXO"
+            ]
+          },
+          "properties": {
+            "collectAllLibs": {
+              "description": "是否取消文件类型限制（默认仅收集libs目录下的.so文件）。",
+              "type": "boolean",
+              "default": false
+            },
+            "debugSymbol": {
+              "description": "debugSymbol配置项。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "strip",
+                  "exclude"
+                ]
+              },
+              "properties": {
+                "strip": {
+                  "description": "是否对.so文件执行strip操作。",
+                  "type": "boolean"
+                },
+                "exclude": {
+                  "description": "strip操作的包含/排除列表。当strip为 true 时，列表中的.so文件不会被处理；为false时，仅列表中的.so文件会被处理。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "filter": {
+              "description": "Native 库过滤设置项。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "excludes",
+                  "pickFirsts",
+                  "pickLasts",
+                  "enableOverride",
+                  "select"
+                ]
+              },
+              "properties": {
+                "select": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "oneOf": [
+                      {
+                        "propertyNames": {
+                          "enum": [
+                            "package",
+                            "version",
+                            "include",
+                            "exclude"
+                          ]
+                        }
+                      },
+                      {
+                        "propertyNames": {
+                          "enum": [
+                            "package",
+                            "version",
+                            "includePattern",
+                            "excludePattern"
+                          ]
+                        }
+                      }
+                    ],
+                    "properties": {
+                      "package": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "string"
+                      },
+                      "include": {
+                        "type": "array",
+                        "deprecationMessage": "It is recommended to use includePattern (glob patterns) instead of include (exact filename). ",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "exclude": {
+                        "type": "array",
+                        "deprecationMessage": "It is recommended to use excludePattern (glob patterns) instead of exclude (exact filename). ",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "includePattern": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "excludePattern": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "excludes": {
+                  "description": "排除模式集。匹配任意模式的库将不会被打包。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "pickFirsts": {
+                  "description": "首次匹配模式集：匹配任意模式的库只有第一个会被打包到HAR。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "pickLasts": {
+                  "description": "最后匹配模式集：匹配任意模式的库只有最后一个会被打包到HAR。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "enableOverride": {
+                  "description": "是否允许覆盖同名native库。允许出现相同路径的库。",
+                  "type": "boolean"
+                }
+              }
+            },
+            "librariesInfo": {
+              "description": ".so库穿透配置。",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "linkLibraries": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": ["name", "linkLibraries"]
+              }
+            },
+            "headerPath": {
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              },
+              "description": "指向包含头文件的目录路径，这些头文件将导出给依赖当前模块的模块。"
+            },
+            "excludeFromHar": {
+              "type": "boolean",
+              "description": "是否在HAR依赖中排除.so文件。默认值为true。\n"
+            },
+            "excludeSoFromBinXO": {
+              "description": "列出要从binxo中排除的.so文件。如果OHOS_ENABLE_HWASAN和OHOS_ENABLE_BINXO设置为true，则列表中匹配的.so文件将不会被binxo处理。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "packingOptions": {
+          "description": "HAR模块打包配置。",
+          "type": "object",
+          "propertyNames": {
+            "enum": ["asset", "customizedOptions"]
+          },
+          "properties": {
+            "asset": {
+              "description": "HAR模块中资产的打包配置。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "include",
+                  "exclude"
+                ]
+              },
+              "properties": {
+                "include": {
+                  "description": "使用glob模式指定要纳入HAR包的文件列表。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exclude": {
+                  "description": "使用glob模式指定要排除在HAR包之外的文件列表。",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "customizedOptions": {
+              "description": "HAR模块自定义配置。",
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "basePackage"
+                ]
+              },
+              "properties": {
+                "basePackage": {
+                  "description": "指定在编译过程中使用的ABC基础包文件。",
+                  "type": "string",
+                  "pattern": "^\\.{1,2}\/.*\\.abc$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "name": {
+      "description": "配置名称。",
+      "type": "string",
+      "pattern": "^[0-9a-zA-Z_-]+$"
+    }
+  },
+  "propertyNames": {
+    "enum": [
+      "apiType",
+      "targets",
+      "buildOption",
+      "buildOptionSet",
+      "buildModeBinder"
+    ]
+  },
+  "properties": {
+    "targets": {
+      "description": "定义模块的自定义目标方案，可指定多个。默认存在一个默认方案。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "enum": [
+            "name",
+            "runtimeOS",
+            "output",
+            "config",
+            "resource",
+            "source"
+          ]
+        },
+        "properties": {
+          "name": {
+            "description": "定义目标名称。",
+            "type": "string",
+            "maxLength": 127,
+            "pattern": "^[0-9a-zA-Z_-]+$"
+          },
+          "runtimeOS": {
+            "description": "指定目标运行时的操作系统类型。",
+            "type": "string",
+            "enum": [
+              "HarmonyOS",
+              "OpenHarmony"
+            ]
+          },
+          "output": {
+            "description": "自定义产品生成的应用包配置。",
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "artifactName"
+              ]
+            },
+            "required": [
+              "artifactName"
+            ],
+            "properties": {
+              "artifactName": {
+                "description": "自定义产品生成的应用包名称。",
+                "type": "string",
+                "pattern": "^[\\da-zA-Z0-9._-]+$"
+              }
+            }
+          },
+          "config": {
+            "description": "目标定制相关配置。",
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "deviceType",
+                "buildOption"
+              ]
+            },
+            "properties": {
+              "deviceType": {
+                "description": "选择目标支持的设备范围。",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 127
+                }
+              },
+              "buildOption": {
+                "$ref": "#/definitions/buildOption",
+                "propertyNames": {
+                  "enum": [
+                    "sourceOption",
+                    "externalNativeOptions",
+                    "napiLibFilterOption",
+                    "arkOptions",
+                    "nativeLib",
+                    "resOptions",
+                    "packingOptions"
+                  ]
+                }
+              }
+            }
+          },
+          "resource": {
+            "description": "模块目标包含的资源目录。",
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "directories"
+              ]
+            },
+            "properties": {
+              "directories": {
+                "description": "模块目标包含的资源目录。若未配置，默认值为 ./src/main/resources。",
+                "type": "array",
+                "items": {
+                  "description": "模块目标的资源相对目录。",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "source": {
+            "description": "指定目标代码范围，用于定制目标功能，例如Ability选择和页面配置。",
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "sourceRoots"
+              ]
+            },
+            "properties": {
+              "sourceRoots": {
+                "description": "Stage模型下指定Ability的扩展源代码目录。",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "minItems": 1
+    },
+    "buildOption": {
+      "$ref": "#/definitions/buildOption",
+      "propertyNames": {
+        "enum": [
+          "sourceOption",
+          "externalNativeOptions",
+          "napiLibFilterOption",
+          "arkOptions",
+          "nativeLib",
+          "resOptions",
+          "packingOptions"
+        ]
+      }
+    },
+    "apiType": {
+      "type": "string",
+      "description": "Ability API模型类型。可配置为faMode或stageMode。",
+      "enum": [
+        "faMode",
+        "stageMode"
+      ]
+    },
+    "buildOptionSet": {
+      "description": "构建配置集合。集合中的每一项，包含当前构建流程中所有工具通用的配置选项。",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/buildOption"
+      }
+    },
+    "buildModeBinder": {
+      "description": "通过该配置，可以将不同的构建配置与目标绑定到指定的构建模式。构建模式需在工程级构建模式列表中声明。",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "enum": [
+            "buildModeName",
+            "mappings"
+          ]
+        },
+        "properties": {
+          "buildModeName": {
+            "$ref": "#/definitions/name"
+          },
+          "mappings": {
+            "description": "映射表定义了目标与构建配置的一对一对应关系。",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "enum": [
+                  "targetName",
+                  "buildOptionName"
+                ]
+              },
+              "properties": {
+                "targetName": {
+                  "$ref": "#/definitions/name"
+                },
+                "buildOptionName": {
+                  "$ref": "#/definitions/name"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "if": {
+    "properties": {
+      "apiType": {
+        "const": "stageMode"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "buildOption": {
+        "propertyNames": {
+          "enum": [
+            "name",
+            "debuggable",
+            "copyFrom",
+            "externalNativeOptions",
+            "sourceOption",
+            "napiLibFilterOption",
+            "arkOptions",
+            "nativeLib",
+            "resOptions",
+            "packingOptions"
+          ]
+        }
+      }
+    }
+  },
+  "else": {
+    "properties": {
+      "buildOption": {
+        "propertyNames": {
+          "enum": [
+            "name",
+            "debuggable",
+            "copyFrom",
+            "externalNativeOptions",
+            "napiLibFilterOption",
+            "arkOptions",
+            "nativeLib",
+            "packingOptions"
+          ]
+        },
+        "properties": {
+          "arkOptions": {
+            "propertyNames": {
+              "enum": [
+                "types"
+              ]
+            }
+          }
+        }
+      },
+      "buildOptionSet": {
+        "description": "构建配置集合。集合中的每一项，包含当前构建流程中所有工具通用的配置选项。",
+        "type": "array",
+        "items": {
+          "propertyNames": {
+            "enum": [
+              "name",
+              "debuggable",
+              "copyFrom",
+              "externalNativeOptions",
+              "napiLibFilterOption",
+              "arkOptions",
+              "nativeLib",
+              "packingOptions"
+            ]
+          },
+          "properties": {
+            "arkOptions": {
+              "propertyNames": {
+                "enum": [
+                  "types"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

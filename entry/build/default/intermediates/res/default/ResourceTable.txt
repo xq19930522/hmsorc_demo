@@ -1,0 +1,11 @@
+string EntryAbility_desc 0x01000000
+string app_name 0x01000001
+string module_desc 0x01000002
+color brand_color 0x01000003
+color card_background 0x01000004
+color page_background 0x01000005
+color start_window_background 0x01000006
+color text_primary 0x01000007
+color text_secondary 0x01000008
+media app_icon 0x01000009
+profile main_pages 0x0100000a

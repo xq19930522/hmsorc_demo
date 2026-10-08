@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "keys": ["Exit code 0xc0000043"], // 识别错误信息的key,所有key都命中了才算命中
+      "code": "00307005", // 错误码
+      "description": "The file is occupied", // 错误码描述
+      "solutions": [ // 多个解决方案，如果有占位符以%s进行标记，按顺序对应InsertSolution中的params参数,
+        "Error code '0xc0000043' is an error in the Windows file system, indicating that the file is currently locked or occupied by another process when you attempt to delete, rename, write, or move the file. Check whether special permission control is performed on the project code or DevEco Studio installation directory.",
+        "You can temporarily disable the antivirus software to determine whether the error is caused by the antivirus software."
+      ],
+      "moreInfo": {
+        "cn": "https://developer.huawei.com/consumer/cn/doc/harmonyos-faqs/faqs-compiling-and-building",
+        "en": "https://developer.huawei.com/consumer/en/doc/harmonyos-faqs/faqs-compiling-and-building"
+      }
+    }
+  ],
+  "unknown_error": {
+    "code": "00308018", // 未知错误
+    "description": "Unknown Error",
+    "solutions": [
+      "This error is unknown, view the detailed error logs in the '.hvigor > outputs > build-logs' directory in the project directory for analysis, or contact the developer's official website for help."
+    ],
+    "moreInfo": {
+      cn: 'https://developer.huawei.com/consumer/cn/doc/harmonyos-faqs/faqs-compiling-and-building',
+      en: 'https://developer.huawei.com/consumer/en/doc/harmonyos-faqs/faqs-compiling-and-building'
+    }
+  }
+}

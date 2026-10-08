@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});class GlobalDataStore{constructor(){this.store=new Map}set(t,e){return this.store.set(t,e),this}get(t){return this.store.get(t)}static getInstance(){return GlobalDataStore.instance||(GlobalDataStore.instance=new GlobalDataStore),GlobalDataStore.instance}}exports.default=GlobalDataStore.getInstance();
